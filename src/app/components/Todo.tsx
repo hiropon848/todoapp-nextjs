@@ -1,17 +1,45 @@
 // Todo.tsx
+"use client";
 import { Task } from "@/types";
-import React from "react";
+import React, { useState } from "react";
 
 interface TodoProps {
   todo: Task;
 }
 
 const Todo = ({ todo }: TodoProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTaskTitle, setEditedTaskTitle] = useState(todo.text);
+  const handleEdit = async () => {
+    setIsEditing(true);
+  };
+  const handleSave = async () => {
+    setIsEditing(false);
+  };
   return (
-    <li key={todo.id} className="flex justify-between p-4 bg-white border-l-4 border-blue-500 rounded shadow">
-      <span>{todo.text}</span>
+    <li
+      key={todo.id}
+      className="flex justify-between p-4 bg-white border-l-4 border-blue-500 rounded shadow"
+    >
+      {isEditing ? (
+        <input
+          type="text"
+          value={todo.text}
+          className="mr-2 py-1 px-2 rounded border-gray-400 border"
+        />
+      ) : (
+        <span>{todo.text}</span>
+      )}
       <div>
-        <button className="text-green-600 mr-3">編集</button>
+        {isEditing ? (
+          <button className="text-blue-600 mr-3" onClick={handleSave}>
+            保存
+          </button>
+        ) : (
+          <button className="text-green-600 mr-3" onClick={handleEdit}>
+            編集
+          </button>
+        )}
         <button className="text-red-600">削除</button>
       </div>
     </li>
