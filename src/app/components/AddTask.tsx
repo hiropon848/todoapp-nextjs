@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from "uuid";
 
 const AddTask = () => {
   const [taskTitle, setTaskTitle] = useState("");
-  const [addTaskDisabled, setAddTaskDisabled] = useState(true);
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     await addTodo({ id: uuidv4(), text: taskTitle });
@@ -17,6 +16,7 @@ const AddTask = () => {
       <input
         type="text"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTaskTitle(e.target.value)}
+        value={taskTitle}
         className="w-full border px-4 py-2 rounded-lg focus:outline-none focus:border-blue-400"
       />
       <button className="w-full px-4 py-2 text-white bg-blue-500 rounded transform hover:bg-blue-400 hover:scale-95 duration-100">
