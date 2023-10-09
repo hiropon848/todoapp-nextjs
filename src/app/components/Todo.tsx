@@ -2,6 +2,7 @@
 "use client";
 import { deleteTodo, editTodo } from "@/api";
 import { Task } from "@/types";
+import { useRouter } from "next/navigation"; //Next.js v13以降はnext/routerではなくこっち
 import React, { useEffect, useRef, useState } from "react";
 
 interface TodoProps {
@@ -9,24 +10,26 @@ interface TodoProps {
 }
 
 const Todo = ({ todo }: TodoProps) => {
-  const taskTitleInputElm = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+  const taskTitleInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTaskTitle, setEditedTaskTitle] = useState(todo.text);
-  const handleEdit = async () => {
+  const editButtonClickHandler = async () => {
     setIsEditing(true);
   };
-  const handleSave = async () => {
+  const saveButtonClickHandler = async () => {
     await editTodo(todo.id, editedTaskTitle);
     todo.text = editedTaskTitle; // チラつき防止
     setIsEditing(false);
+    router.refresh(); //v13だといらないのかも
   };
-  const handleDelete = async () => {
+  const deleteButtonClickHandler = async () => {
     await deleteTodo(todo.id);
   };
 
   useEffect(() => {
     if (isEditing) {
-      taskTitleInputElm.current?.focus(); //?は存在するときだけアクセスする = オプショナルチェーン
+      taskTitleInputRef.current?.focus(); //?は存在するときだけアクセスする = オプショナルチェーン
     }
   }, [isEditing]);
 
@@ -37,7 +40,7 @@ const Todo = ({ todo }: TodoProps) => {
     >
       {isEditing ? (
         <input
-          ref={taskTitleInputElm}
+          ref={taskTitleInputRef}
           type="text"
           value={editedTaskTitle}
           className="mr-2 py-1 px-2 rounded border-gray-400 border"
@@ -48,15 +51,15 @@ const Todo = ({ todo }: TodoProps) => {
       )}
       <div>
         {isEditing ? (
-          <button className="text-blue-600 mr-3" onClick={handleSave}>
+          <button className="text-blue-600 mr-3" onClick={saveButtonClickHandler}>
             保存
           </button>
         ) : (
-          <button className="text-green-600 mr-3" onClick={handleEdit}>
+          <button className="text-green-600 mr-3" onClick={editButtonClickHandler}>
             編集
           </button>
         )}
-        <button className="text-red-600" onClick={handleDelete}>
+        <button className="text-red-600" onClick={deleteButtonClickHandler}>
           削除
         </button>
       </div>
