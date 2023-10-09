@@ -13,6 +13,7 @@ const AddTask = () => {
     e.preventDefault();
     await addTodo({ id: uuidv4(), text: taskTitle });
     setTaskTitle("");
+    setAddButtonDisabled(true);
     router.refresh();
   };
   const taskTitleChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
